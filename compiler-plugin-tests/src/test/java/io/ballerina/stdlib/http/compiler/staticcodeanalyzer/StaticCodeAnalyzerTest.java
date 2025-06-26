@@ -95,7 +95,7 @@ public class StaticCodeAnalyzerTest {
 
             // validate the issues
             List<Issue> issues = testRunner.getIssues();
-            Assert.assertEquals(issues.size(), 19);
+            Assert.assertEquals(issues.size(), 20);
             Assertions.assertIssue(issues, 0, "ballerina/http:1", "service.bal",
                     19, 19, Source.BUILT_IN);
             Assertions.assertIssue(issues, 0, "ballerina/http:1", "service.bal",
@@ -128,6 +128,8 @@ public class StaticCodeAnalyzerTest {
             Assertions.assertIssue(issues, 0, "ballerina/http:2", "service_object.bal",
                     44, 44, Source.BUILT_IN);
 
+            Assertions.assertIssue(issues, 0, "ballerina/http:3", "function.bal",
+                    30, 30, Source.BUILT_IN);
             Assertions.assertIssue(issues, 0, "ballerina/http:3", "service.bal",
                     21, 21, Source.BUILT_IN);
             Assertions.assertIssue(issues, 0, "ballerina/http:3", "service.bal",

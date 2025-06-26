@@ -18,10 +18,17 @@
 
 package io.ballerina.stdlib.http.compiler.staticcodeanalyzer;
 
-import io.ballerina.compiler.api.SemanticModel;
-import io.ballerina.compiler.api.symbols.ResourceMethodSymbol;
-import io.ballerina.compiler.api.symbols.Symbol;
-import io.ballerina.compiler.syntax.tree.*;
+import io.ballerina.compiler.syntax.tree.ClientResourceAccessActionNode;
+import io.ballerina.compiler.syntax.tree.ComputedResourceAccessSegmentNode;
+import io.ballerina.compiler.syntax.tree.ExpressionNode;
+import io.ballerina.compiler.syntax.tree.FieldAccessExpressionNode;
+import io.ballerina.compiler.syntax.tree.FunctionDefinitionNode;
+import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.RecordFieldNode;
+import io.ballerina.compiler.syntax.tree.RecordTypeDescriptorNode;
+import io.ballerina.compiler.syntax.tree.RequiredParameterNode;
+import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
+import io.ballerina.compiler.syntax.tree.SimpleNameReferenceNode;
 import io.ballerina.projects.Document;
 import io.ballerina.projects.DocumentId;
 import io.ballerina.projects.Module;
@@ -45,16 +52,58 @@ class HttpClientAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
 
         resourceAccessPaths.stream().forEach(resourceAccessPath -> {
             if (resourceAccessPath instanceof ComputedResourceAccessSegmentNode computedResourceAccessSegment) {
-                SemanticModel semanticModel = context.semanticModel();
+                ExpressionNode expression = computedResourceAccessSegment.expression();
 
-                if (semanticModel.symbol(computedResourceAccessSegment).isPresent()) {
-                    Symbol symbol = semanticModel.symbol(computedResourceAccessSegment).get();
-                    if (symbol instanceof ResourceMethodSymbol) {
-                        report(context, AVOID_TRAVERSING_ATTACKS.getId());
-                    }
+                switch (expression) {
+                    case FieldAccessExpressionNode fieldAccessExpression:
+                        if (isUserControlledInput(fieldAccessExpression.fieldName())) {
+                            report(context, AVOID_TRAVERSING_ATTACKS.getId());
+                        }
+                        break;
+                    case SimpleNameReferenceNode simpleNameReference:
+                        if (isUserControlledInput(simpleNameReference)) {
+                            report(context, AVOID_TRAVERSING_ATTACKS.getId());
+                        }
+                        break;
+                    default:
+                        // No action needed for other expression types
                 }
             }
         });
+    }
+
+    /**
+     * Checks if the given node is a user-controlled input.
+     *
+     * @param node the syntax node to check
+     * @return true if the node is a user-controlled input, false otherwise
+     */
+    private boolean isUserControlledInput(Node node) {
+        Node parent = node.parent();
+
+        while (parent != null) {
+            if (parent instanceof FunctionDefinitionNode functionDefinition) {
+                return functionDefinition.functionSignature().parameters().stream()
+                        .anyMatch(parameter -> {
+                            if (parameter instanceof RequiredParameterNode requiredParameter &&
+                                    requiredParameter.paramName().isPresent()) {
+                                if (requiredParameter.typeName()
+                                        instanceof RecordTypeDescriptorNode recordTypeDescriptor) {
+                                    return recordTypeDescriptor.fields().stream()
+                                            .anyMatch(field -> field instanceof RecordFieldNode recordField &&
+                                                    recordField.fieldName().text().equals(node.toSourceCode()));
+                                } else {
+                                    String paramName = requiredParameter.paramName().get().text();
+                                    return node.toSourceCode().equals(paramName);
+                                }
+                            }
+                            return false;
+                        });
+            }
+            parent = parent.parent();
+        }
+
+        return false;
     }
 
     /**

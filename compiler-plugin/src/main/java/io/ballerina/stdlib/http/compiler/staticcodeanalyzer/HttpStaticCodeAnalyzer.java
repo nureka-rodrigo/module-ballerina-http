@@ -24,7 +24,11 @@ import io.ballerina.scan.Reporter;
 
 import java.util.List;
 
-import static io.ballerina.compiler.syntax.tree.SyntaxKind.*;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.ANNOTATION;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.CLIENT_RESOURCE_ACCESS_ACTION;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.CLASS_DEFINITION;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.OBJECT_TYPE_DESC;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.SERVICE_DECLARATION;
 
 /**
  * The static code analyzer implementation for Ballerina Http package.
