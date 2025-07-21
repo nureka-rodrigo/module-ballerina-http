@@ -28,6 +28,7 @@ import static io.ballerina.compiler.syntax.tree.SyntaxKind.ANNOTATION;
 import static io.ballerina.compiler.syntax.tree.SyntaxKind.CLASS_DEFINITION;
 import static io.ballerina.compiler.syntax.tree.SyntaxKind.OBJECT_TYPE_DESC;
 import static io.ballerina.compiler.syntax.tree.SyntaxKind.SERVICE_DECLARATION;
+import static io.ballerina.compiler.syntax.tree.SyntaxKind.RETURN_STATEMENT;
 
 /**
  * The static code analyzer implementation for Ballerina Http package.
@@ -44,5 +45,6 @@ public class HttpStaticCodeAnalyzer extends CodeAnalyzer {
         analysisContext.addSyntaxNodeAnalysisTask(new HttpServiceAnalyzer(reporter),
                 List.of(SERVICE_DECLARATION, OBJECT_TYPE_DESC, CLASS_DEFINITION));
         analysisContext.addSyntaxNodeAnalysisTask(new HttpAnnotationAnalyzer(reporter), ANNOTATION);
+        analysisContext.addSyntaxNodeAnalysisTask(new HttpReturnResponseAnalyzer(reporter), RETURN_STATEMENT);
     }
 }
