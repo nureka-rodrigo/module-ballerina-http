@@ -1,0 +1,42 @@
+[
+  {
+    "location": {
+      "filePath": "service.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 29,
+      "endColumn": 52,
+      "startOffset": 840,
+      "length": 23
+    },
+    "rule": {
+      "id": "ballerina:2",
+      "numericId": 2,
+      "description": "Unused function parameter",
+      "ruleKind": "CODE_SMELL"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/service.bal",
+    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-http/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/service.bal"
+  },
+  {
+    "location": {
+      "filePath": "service.bal",
+      "startLine": 25,
+      "endLine": 25,
+      "startColumn": 28,
+      "endColumn": 53,
+      "startOffset": 839,
+      "length": 25
+    },
+    "rule": {
+      "id": "ballerina/http:3",
+      "numericId": 3,
+      "description": "Avoid directly using database entity records as parameters in HTTP resource methods",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule3/service.bal",
+    "filePath": "/home/nureka/Documents/GitHub/module-ballerina-http/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule3/service.bal"
+  }
+]

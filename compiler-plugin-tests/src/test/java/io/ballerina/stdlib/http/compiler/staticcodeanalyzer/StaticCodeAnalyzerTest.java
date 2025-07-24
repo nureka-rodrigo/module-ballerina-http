@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static io.ballerina.stdlib.http.compiler.staticcodeanalyzer.HttpRule.AVOID_DEFAULT_RESOURCE_ACCESSOR;
+import static io.ballerina.stdlib.http.compiler.staticcodeanalyzer.HttpRule.AVOID_ENTITY_RECORDS_IN_RESOURCE_ARGUMENTS;
 import static io.ballerina.stdlib.http.compiler.staticcodeanalyzer.HttpRule.AVOID_PERMISSIVE_CORS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -90,6 +91,11 @@ public class StaticCodeAnalyzerTest {
                     "ballerina/http:2",
                     "Avoid permissive Cross-Origin Resource Sharing",
                     RuleKind.VULNERABILITY);
+            Assertions.assertRule(
+                    rules,
+                    "ballerina/http:3",
+                    "Avoid directly using entity records as parameters in HTTP resource methods",
+                    RuleKind.VULNERABILITY);
 
             // validate the issues
             List<Issue> issues = testRunner.getIssues();
@@ -129,6 +135,10 @@ public class StaticCodeAnalyzerTest {
                         36, 36, Source.BUILT_IN);
                 Assertions.assertIssue(issues, index, "ballerina/http:2", "service_object.bal",
                         44, 44, Source.BUILT_IN);
+            } else if (rule == AVOID_ENTITY_RECORDS_IN_RESOURCE_ARGUMENTS) {
+                Assert.assertEquals(issues.size(), 1);
+                Assertions.assertIssue(issues, index, "ballerina/http:3", "service.bal",
+                        25, 25, Source.BUILT_IN);
             }
 
             // validate the output

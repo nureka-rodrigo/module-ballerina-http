@@ -28,7 +28,9 @@ import static io.ballerina.stdlib.http.compiler.staticcodeanalyzer.RuleFactory.c
  */
 public enum HttpRule {
     AVOID_DEFAULT_RESOURCE_ACCESSOR(createRule(1, "Avoid allowing default resource accessor", VULNERABILITY)),
-    AVOID_PERMISSIVE_CORS(createRule(2, "Avoid permissive Cross-Origin Resource Sharing", VULNERABILITY));
+    AVOID_PERMISSIVE_CORS(createRule(2, "Avoid permissive Cross-Origin Resource Sharing", VULNERABILITY)),
+    AVOID_ENTITY_RECORDS_IN_RESOURCE_ARGUMENTS(createRule(3, "Avoid directly using entity records as parameters in " +
+            "HTTP resource methods", VULNERABILITY));
 
     private final Rule rule;
 
